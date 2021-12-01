@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script>
+        var docForSave="";let subNode3="";
+         function foo(doc)
+    {
+        var root=doc.documentElement; 
+        var f1  = document.getElementById('comForm');
+        var f2  = document.getElementById('clientForm');
+        let y = 0;
+        for(let i=0;i<root.childNodes.length;i++)
+        {
+            let node=root.childNodes[i];
+            if(node.nodeType!= Node.TEXT_NODE)
+            {
+                console.log(node);
+                console.log(node.nodeName);
+                console.log(node.textContent);
+                console.log(node.attributes);
+                f1.insertAdjacentHTML('beforeend', `<label style="font-size: large;font-weight: bold;">${node.nodeName}</label>`);
+                if(node.childNodes.length>0)
+                {
+                    console.log('вложенные элементы');
+                    for(let j=0;j<node.childNodes.length;j++)
+                    {
+                        let subNode=node.childNodes[j];
+                        if(subNode.nodeType!=Node.TEXT_NODE){
+                            console.log(subNode);
+                            if(subNode.childNodes.length==1)
+                            f1.insertAdjacentHTML('beforeend', `<p>${subNode.nodeName}</p><input value="${subNode.textContent}"/><br>`);
+                            if(node.childNodes.length>0)
+                {
+                    if(y==0){
+                    f2.insertAdjacentHTML('beforeend', `<label style="font-size: large;font-weight: bold;">Info client</label>`);
+                y=1;    
+                }
+                 subNode3=subNode;
+                    for(let jj=0;jj<subNode.childNodes.length;jj++)
+                    {
+                        let subNode2=subNode.childNodes[jj];
+                        if(subNode2.nodeType!=Node.TEXT_NODE){
+                            console.log(subNode2);
+                            f2.insertAdjacentHTML('beforeend', `<p>${subNode2.nodeName}</p><input value="${subNode2.textContent}"/><br>`);
+                        }
+                    }
+                }
+                        }
+                    }
+                }
+
+            }
+
+        }
+        // var tag=doc.getElementsByTagName("infoCategory")[0];
+        // console.log(tag.textContent);
+    }
+    function f1()
+   {
+    var but=document.getElementById("b");
+    but.addEventListener("click",
+        function(){
+                console.log("click");
+                fetch("./getXML.php", 
+                      {
+                          method: 'GET'
+                      }                          
+                )
+                .then( (response)=> {return response.text();})
+                .then( 
+                    (data)=>{
+                        // вывод строки с содержанием XML-документа
+                        // console.log("aa"+data);
+                        var parser=new DOMParser();
+                        // создание объектной модели документа из строки в формате "text/xml" 
+                        var doc=parser.parseFromString(data,"text/xml");
+                        // var root=doc.documentElement ; // корневой элемент
+                        // console.log(root);
+                        // console.log("1q"+root.childNodes);
+                        foo(doc); 
+                        docForSave=data;
+                        // changedata(doc);
+                    } 
+                    );
+        }
+    );
+   }
+    function foo2(docc)
+    {
+              var rootNode=docc.documentElement;
+              // для каждого инпута создаем узлы
+              var nodeX=docc.createElement("infoCategory");
+              var nodeXX=docc.createElement("nameC");
+              var nodeY=docc.createElement("phone");
+              var nodeDt=docc.createElement("sale");
+              var nodeX2=docc.createElement("price");
+              var nodeY2=docc.createElement("stars");
+              var nodeDt2=docc.createElement("age");
+              var nodeX3=docc.createElement("daterequest");
+              var nodeY3=docc.createElement("dateExecute");
+              var nodeDt3=docc.createElement("address");
+              var nodeDt4=docc.createElement("timeduration");
+              var nodea=docc.createElement("infoClient");
+              var nodeb=docc.createElement("fioClient");
+              var nodec=docc.createElement("phone");
+              var nods=docc.createElement("order");
+              // записываем значение в узел
+              rootNode.appendChild(nodeX);
+              nodeXX.textContent=document.getElementsByTagName("input")[0].value;
+              nodeX.appendChild(nodeXX);
+              nodeY.textContent=document.getElementsByTagName("input")[1].value;
+              nodeX.appendChild(nodeY);
+              nodeDt.textContent=document.getElementsByTagName("input")[2].value;
+              nodeX.appendChild(nodeDt);
+              nodeX2.textContent=document.getElementsByTagName("input")[3].value;
+              nodeX.appendChild(nodeX2);
+              nodeY2.textContent=document.getElementsByTagName("input")[4].value;
+              nodeX.appendChild(nodeY2);
+              nodeDt2.textContent=document.getElementsByTagName("input")[5].value;
+              nodeX.appendChild(nodeDt2);
+              nodeX3.textContent=document.getElementsByTagName("input")[6].value;
+              nodeX.appendChild(nodeX3);
+              nodeY3.textContent=document.getElementsByTagName("input")[7].value;
+              nodeX.appendChild(nodeY3);
+              nodeDt3.textContent=document.getElementsByTagName("input")[8].value;
+              nodeX.appendChild(nodeDt3);
+              nodeDt4.textContent=document.getElementsByTagName("input")[9].value;
+              nodeX.appendChild(nodeDt4);
+              nodeX.appendChild(nodea);
+              nods.textContent=document.getElementsByTagName("input")[10].value;
+              nodea.appendChild(nods);
+              nodeb.textContent=document.getElementsByTagName("input")[11].value;
+              nodea.appendChild(nodeb);
+              nodec.textContent=document.getElementsByTagName("input")[12].value;
+              nodea.appendChild(nodec);
+              nodeDt3.textContent=document.getElementsByTagName("input")[13].value;
+              nodea.appendChild(nodeDt3);
+    }
+    function fSave()
+    {
+              var parser=new DOMParser();
+              // создаем xml-документ
+             var docc=parser.parseFromString(`<request></request>`,"text/xml");
+             foo2(docc);
+              // сохраняем документ в строку
+              var serializer= new XMLSerializer();
+              var textXML=serializer.serializeToString(docc);
+
+              console.log(textXML);
+              // для отправки данных используем FormData
+              var data=new FormData();
+              data.append("xml",textXML);
+              fetch("./saveXML2.php", // URI
+                      {
+                          method: 'post',
+                          body:data  // сюда записаны данные
+                         
+                      }                          
+                )
+                .then( (response)=> {return response.text();})
+                 // после выполнения асинхронной функции
+                .then( 
+                    // callback получает результат запроса в виде параметра
+                    (data)=>{
+                        // вывод строки с содержанием XML-документа
+                        console.log(data);                    
+                    } 
+                    );
+          }
+         
+        function Sfunction(){
+            for(let jj=0;jj<subNode3.childNodes.length;jj++)
+                    {
+                        let subNode2=subNode3.childNodes[jj];
+                        if(subNode2.nodeType!=Node.TEXT_NODE){
+                            if(document.getElementById("inputsearch").value==subNode2.textContent){
+                                alert("Order "+subNode2.textContent+" is found");
+                            }
+                        }
+                    }
+          }
+    </script>
+</head>
+<body onload="f1();false;">
+    <button id="b">Show XML</button>
+   <button id="send" onclick="fSave();">Save</button> 
+   <form id="comForm" style="position: absolute;color: white;background: linear-gradient(to top, #ff0000, #490000);padding-bottom: 2%; width: 30%;text-align: center;">
+   </form>
+   <form id="clientForm" style="position: absolute;color: white;left:50%;padding-bottom: 2%; background: linear-gradient(to top, #ff0000, #490000); width: 30%;text-align: center;">
+</form>
+<button onclick="Sfunction();">Search order</button>
+<input type="search" placeholder="123" id="inputsearch" pattern="[0-9]{1,30}"/>
+</body>
+</html>

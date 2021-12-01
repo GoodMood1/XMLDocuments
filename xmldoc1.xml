@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request>
+    <infoCategory>
+        <nameC>Doctor</nameC>
+        <phone>+380959473952</phone>
+        <sale>0</sale>
+        <price>1000</price>
+        <stars>5</stars>
+        <age>19</age> 
+        <daterequest>2021-02-02</daterequest>
+        <dateExecute>17:00</dateExecute>
+        <address>Zaporozhzhye st. Uzumator 13, 3</address>
+        <timeduration>25:00</timeduration>
+        <infoClient>
+            <order>1</order>
+            <fioClient>Leonardo Dicaprio</fioClient>
+            <phone>+1353525535</phone>
+            <address>Lviv st. Ktozna 10, 6</address>
+        </infoClient>
+    </infoCategory>
+</request>

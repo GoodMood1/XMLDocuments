@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<script>
+    function foo1(doc)
+    {
+                  //console.log(dt);
+                  var rootNode=doc.documentElement;
+              // для каждого инпута создаем узлы
+              var nodeX=doc.createElement("X");
+              var nodeY=doc.createElement("Y");
+              var nodeDt=doc.createElement("dateof");
+              // 2. получаем значения input-ов
+              var x=document.getElementsByName("X")[0].value;
+              var y=document.getElementsByName("Y")[0].value;
+              var dt=document.getElementsByName("dateof")[0].value;
+    
+              // записываем значение в узел
+              nodeX.textContent=x;
+              rootNode.appendChild(nodeX);
+              nodeY.textContent=y;
+              rootNode.appendChild(nodeY);              
+              nodeDt.textContent=dt;
+              rootNode.appendChild(nodeDt);
+              // смотрим на полученный документ
+              console.log(doc);
+    }
+
+   window.onload = function(){
+       var bt=document.getElementById("send");
+       bt.addEventListener("click"
+          , ()=>{
+              var parser=new DOMParser();
+
+              // создаем xml-документ
+              var doc=parser.parseFromString("<mathprobe></mathprobe>","text/xml"); 
+              foo1(doc);
+              // сохраняем документ в строку
+              var serializer= new XMLSerializer();
+              var textXML=serializer.serializeToString(doc);
+
+              console.log(textXML);
+              // для отправки данных используем FormData
+              var data=new FormData();
+              data.append("xml",textXML);
+              fetch("./saveXML.php", // URI
+                      {
+                          method: 'post',
+                          body:data  // сюда записаны данные
+                         
+                      }                          
+                )
+                .then( (response)=> {return response.text();})
+                 // после выполнения асинхронной функции
+                .then( 
+                    // callback получает результат запроса в виде параметра
+                    (data)=>{
+                        // вывод строки с содержанием XML-документа
+                        console.log(data);                    
+                    } 
+                    );
+          }
+       )
+   }
+</script>
+<body>
+    <input name="X" value="10"/>
+    <input name="Y" value="20"/>
+    <input type="date" name="dateof" value="2021-02-01"/>
+<button id="send">Send XML</button>
+</body>
+</html>
